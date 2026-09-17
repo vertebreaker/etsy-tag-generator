@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Sparkles, Copy, Check, ExternalLink, ShieldCheck } from 'lucide-react';
+import { Sparkles, Copy, Check, ExternalLink, HelpCircle } from 'lucide-react';
 
 export default function Home() {
   const [productTitle, setProductTitle] = useState('');
@@ -50,9 +50,9 @@ export default function Home() {
         <h1 className="text-4xl font-extrabold text-slate-900 mt-3 tracking-tight sm:text-5xl">
           Etsy SEO Listing & Tag Generator
         </h1>
-      <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto mt-2">
-  Generate SEO-optimized titles, all 13 ranking tags, and complete listing copy in seconds.
-</p>
+        <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto mt-2">
+          Generate SEO-optimized titles, all 13 ranking tags, and complete listing copy in seconds.
+        </p>
       </div>
 
       {/* Input Box */}
@@ -118,7 +118,7 @@ export default function Home() {
 
       {/* Output Display */}
       {result && (
-        <div className="space-y-6">
+        <div className="space-y-6 mb-12">
           {/* Title */}
           <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
             <div className="flex justify-between items-center mb-2">
@@ -203,6 +203,57 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* SEO & Educational FAQ Section */}
+      <section className="mt-16 pt-10 border-t border-slate-200">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center justify-center gap-2">
+            <HelpCircle size={22} className="text-orange-600" />
+            Frequently Asked Questions & Etsy SEO Guide
+          </h2>
+          <p className="text-slate-600 text-sm mt-1">
+            Learn how Etsy's search algorithm indexes titles, tags, and listing copy.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <h3 className="font-semibold text-slate-800 text-sm sm:text-base mb-1.5">
+              Why does this tool generate exactly 13 tags?
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Etsy allows a maximum of 13 tags per item, and each tag has a strict 20-character limit. Using all 13 slots gives your listing the maximum number of chances to match buyer searches across high-intent long-tail keywords.
+            </p>
+          </div>
+
+          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <h3 className="font-semibold text-slate-800 text-sm sm:text-base mb-1.5">
+              How does Etsy prioritize listing titles?
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              The first 30–40 characters of your listing title carry the highest weight for Etsy search indexing and mobile shopper click-through rates. This generator places your core product keywords right up front while staying under the 140-character maximum.
+            </p>
+          </div>
+
+          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <h3 className="font-semibold text-slate-800 text-sm sm:text-base mb-1.5">
+              Can I paste this output directly into Etsy?
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Yes. The descriptions are generated in clean, natural plain text without markdown symbols (like ** or #) so they paste into Etsy's listing description box without requiring any manual editing.
+            </p>
+          </div>
+
+          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <h3 className="font-semibold text-slate-800 text-sm sm:text-base mb-1.5">
+              Is this tool completely free to use?
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Yes, 100% free with unlimited generations. No credit card, account registration, or monthly subscription is required.
+            </p>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
