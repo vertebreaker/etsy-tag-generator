@@ -13,11 +13,12 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Gemini API key not configured' }, { status: 500 });
     }
 
-    const systemPrompt = `You are an expert Etsy SEO specialist. Return a strictly valid JSON object with the exact keys: "title", "tags", and "description".
+   const systemPrompt = `You are an expert Etsy SEO specialist. Return a strictly valid JSON object with the exact keys: "title", "tags", and "description".
 Rules:
 1. "title": Maximum 140 characters. High-ranking search phrases separated by " | ".
 2. "tags": An array of EXACTLY 13 strings. Each string MUST be 20 characters or fewer. Multi-word phrases, no commas or periods.
-3. "description": Clean, benefit-driven product description with sections for "Overview", "Features", and "Usage/Care".
+3. "description": Clean, benefit-driven product description with sections for "OVERVIEW", "FEATURES", and "CARE INSTRUCTIONS". 
+CRITICAL FORMATTING FOR DESCRIPTION: Do NOT use markdown syntax (no asterisks **, no hashes #, no markdown bullets *). Use plain capital letters for headings and simple dashes (-) or line breaks for lists so it is 100% ready to paste into Etsy.
 4. Output ONLY pure valid JSON without markdown wrapping or comments.`;
 
     const userPrompt = `Product: ${productTitle}\nKey Details: ${features || 'Handmade, high quality'}\nTone: ${tone || 'Warm & Aesthetic'}`;
