@@ -50,9 +50,9 @@ export default function Home() {
         <h1 className="text-4xl font-extrabold text-slate-900 mt-3 tracking-tight sm:text-5xl">
           Etsy SEO Listing & Tag Generator
         </h1>
-        <p className="text-slate-600 mt-2 text-base sm:text-lg">
-          Generate an optimized 140-char title, all 13 ranking tags, and complete listing copy in 2 seconds.
-        </p>
+       <p className="text-slate-600 text-sm sm:text-base max-w-xl mx-auto">
+  Generate an SEO-optimized title (up to 140 chars), all 13 ranking tags, and full listing copy in seconds.
+</p>
       </div>
 
       {/* Input Box */}
