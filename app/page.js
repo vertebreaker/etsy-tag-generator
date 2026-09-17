@@ -184,7 +184,7 @@ export default function Home() {
             </pre>
           </div>
 
-          {/* Built-in Monetization Box (Affiliate Spot) */}
+{/* Built-in Monetization Box (Affiliate Spot) */}
           <div className="bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl p-5 text-white shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
               <h4 className="font-bold text-base sm:text-lg">Looking for Print-On-Demand Products?</h4>
@@ -193,12 +193,12 @@ export default function Home() {
               </p>
             </div>
             <a
-              href="https://printify.com" 
+              href="https://www.printful.com" 
               target="_blank"
               rel="noopener noreferrer"
               className="bg-white text-orange-700 hover:bg-orange-50 font-bold px-4 py-2.5 rounded-lg text-xs sm:text-sm flex items-center gap-1.5 whitespace-nowrap shadow-sm"
             >
-              Try Printify Free <ExternalLink size={14} />
+              Try Printful Free <ExternalLink size={14} />
             </a>
           </div>
         </div>
