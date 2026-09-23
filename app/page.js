@@ -11,7 +11,9 @@ export default function Home() {
   const [copiedKey, setCopiedKey] = useState('');
 
   const handleGenerate = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
+    if (!productTitle.trim()) return;
+
     setLoading(true);
     setResult(null);
 
@@ -23,6 +25,14 @@ export default function Home() {
       });
       const data = await res.json();
       if (res.ok) {
+        // Enforce hard cap of 140 characters so it never exceeds Etsy's limit
+        if (data.title && data.title.length > 140) {
+          data.title = data.title.slice(0, 140).trim();
+          // Remove trailing separator/pipe if sliced awkwardly
+          if (data.title.endsWith('|') || data.title.endsWith('-') || data.title.endsWith(',')) {
+            data.title = data.title.slice(0, -1).trim();
+          }
+        }
         setResult(data);
       } else {
         alert(data.error || 'Generation failed.');
@@ -31,6 +41,14 @@ export default function Home() {
       alert('Network error. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Prevent mobile keyboard 'Enter' from auto-triggering generation
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.target.blur(); // Dismisses mobile keyboard cleanly
     }
   };
 
@@ -65,6 +83,7 @@ export default function Home() {
               required
               placeholder="e.g. Handmade Lavender Soy Candle in Amber Jar"
               value={productTitle}
+              onKeyDown={handleKeyDown}
               onChange={(e) => setProductTitle(e.target.value)}
               className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm sm:text-base"
             />
@@ -77,6 +96,7 @@ export default function Home() {
                 type="text"
                 placeholder="e.g. 100% soy wax, cotton wick, 40hr burn time"
                 value={features}
+                onKeyDown={handleKeyDown}
                 onChange={(e) => setFeatures(e.target.value)}
                 className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
               />
