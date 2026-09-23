@@ -83,16 +83,23 @@ export default function Home() {
             </div>
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1">Listing Vibe / Tone</label>
-              <select
-                value={tone}
-                onChange={(e) => setTone(e.target.value)}
-                className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm bg-white"
-              >
-                <option>Warm & Aesthetic</option>
-                <option>Minimalist & Modern</option>
-                <option>Luxury & Artisanal</option>
-                <option>Gift & Holiday Focused</option>
-              </select>
+              <div className="relative flex items-center">
+                <select
+                  value={tone}
+                  onChange={(e) => setTone(e.target.value)}
+                  className="w-full appearance-none border border-slate-300 rounded-xl px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm bg-white cursor-pointer"
+                >
+                  <option>Warm & Aesthetic</option>
+                  <option>Minimalist & Modern</option>
+                  <option>Luxury & Artisanal</option>
+                  <option>Gift & Holiday Focused</option>
+                </select>
+                <div className="pointer-events-none absolute right-3.5 flex items-center text-slate-500">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
 
