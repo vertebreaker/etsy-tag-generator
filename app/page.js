@@ -41,7 +41,7 @@ export default function Home() {
   };
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-12">
+    <main className="max-w-4xl mx-auto px-4 py-12 relative pb-24">
       {/* Header */}
       <div className="text-center mb-10">
         <span className="bg-orange-100 text-orange-700 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
@@ -140,17 +140,19 @@ export default function Home() {
 
           {/* 13 Tags */}
           <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-            <div className="flex justify-between items-center mb-3">
+            <div className="flex flex-wrap justify-between items-center gap-2 mb-3">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
                 13 Etsy SEO Tags ({result.tags?.length || 0} / 13)
               </span>
-              <button
-                onClick={() => copyToClipboard(result.tags?.join(', '), 'tags')}
-                className="text-orange-600 hover:text-orange-700 text-xs font-semibold flex items-center gap-1"
-              >
-                {copiedKey === 'tags' ? <Check size={14} /> : <Copy size={14} />}
-                {copiedKey === 'tags' ? 'Copied All' : 'Copy All 13 Tags'}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => copyToClipboard(result.tags?.join(', '), 'tags')}
+                  className="bg-orange-50 hover:bg-orange-100 text-orange-700 text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1 border border-orange-200 transition-colors"
+                >
+                  {copiedKey === 'tags' ? <Check size={14} /> : <Copy size={14} />}
+                  {copiedKey === 'tags' ? 'Copied Commas (,)' : 'Copy with Commas (,)'}
+                </button>
+              </div>
             </div>
             <div className="flex flex-wrap gap-2">
               {result.tags?.map((tag, idx) => (
@@ -236,6 +238,17 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Floating Buy Me a Coffee Pill */}
+      <a
+        href="https://buymeacoffee.com/etsytaggen"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-5 right-5 z-50 flex items-center gap-2 px-4 py-2.5 bg-[#FFDD00] hover:bg-[#ffea40] text-slate-900 font-bold text-xs sm:text-sm rounded-full shadow-lg border border-amber-300 transition-transform hover:scale-105 active:scale-95"
+      >
+        <span className="text-base">☕</span>
+        <span>Buy me a coffee</span>
+      </a>
     </main>
   );
 }
