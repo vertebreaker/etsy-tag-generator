@@ -20,6 +20,9 @@ export const metadata = {
   alternates: {
     canonical: 'https://etsy-tag-generator.vercel.app',
   },
+  verification: {
+    google: 'ysYgfyeSwlINtiBGeler3QdRcrGoVEWXay7Wfw-ieOs',
+  },
   openGraph: {
     title: 'Free Etsy SEO Listing & 13 Tag Generator',
     description:
