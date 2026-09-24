@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://etsy-tag-generator.vercel.app/sitemap.xml
