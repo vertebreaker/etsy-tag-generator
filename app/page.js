@@ -25,14 +25,19 @@ export default function Home() {
       });
       const data = await res.json();
       if (res.ok) {
-        // Enforce hard cap of 140 characters so it never exceeds Etsy's limit
+        // Enforce hard cap of 140 characters on Title
         if (data.title && data.title.length > 140) {
           data.title = data.title.slice(0, 140).trim();
-          // Remove trailing separator/pipe if sliced awkwardly
           if (data.title.endsWith('|') || data.title.endsWith('-') || data.title.endsWith(',')) {
             data.title = data.title.slice(0, -1).trim();
           }
         }
+
+        // Frontend guarantee: exactly 13 tags, trimmed
+        if (Array.isArray(data.tags)) {
+          data.tags = data.tags.map(t => t.trim()).slice(0, 13);
+        }
+
         setResult(data);
       } else {
         alert(data.error || 'Generation failed.');
@@ -182,15 +187,24 @@ export default function Home() {
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              {result.tags?.map((tag, idx) => (
-                <span
-                  key={idx}
-                  className="bg-orange-50 text-orange-800 border border-orange-200 text-xs font-medium px-3 py-1.5 rounded-lg flex items-center gap-1"
-                >
-                  {tag}
-                  <span className="text-[10px] text-orange-400">({tag.length}/20)</span>
-                </span>
-              ))}
+              {result.tags?.map((tag, idx) => {
+                const isOverLimit = tag.length > 20;
+                return (
+                  <span
+                    key={idx}
+                    className={`border text-xs font-medium px-3 py-1.5 rounded-lg flex items-center gap-1 transition-colors ${
+                      isOverLimit
+                        ? 'bg-red-50 text-red-700 border-red-200'
+                        : 'bg-orange-50 text-orange-800 border-orange-200'
+                    }`}
+                  >
+                    {tag}
+                    <span className={`text-[10px] ${isOverLimit ? 'text-red-500 font-bold' : 'text-orange-400'}`}>
+                      ({tag.length}/20)
+                    </span>
+                  </span>
+                );
+              })}
             </div>
           </div>
 
