@@ -29,6 +29,29 @@ const GENERIC_INTENT_MODIFIERS = [
   'accessory', 'keepsake', 'trendy', 'popular find', 'best seller'
 ];
 
+// Sanitize title to strictly <= 140 chars without clipping words or pipe segments
+function sanitizeEtsyTitle(rawTitle, fallbackProduct = 'Custom Gift') {
+  if (!rawTitle || typeof rawTitle !== 'string') {
+    return `${fallbackProduct} | Handmade Gift`.slice(0, 140);
+  }
+
+  let title = rawTitle.trim();
+  if (title.length <= 140) return title;
+
+  // 1. Hard cap slice at 140
+  let truncated = title.slice(0, 140);
+
+  // 2. If it severed inside a pipe block, remove the incomplete trailing segment
+  const lastPipeIndex = truncated.lastIndexOf(' | ');
+  if (lastPipeIndex > 40) {
+    return truncated.slice(0, lastPipeIndex).trim();
+  }
+
+  // 3. Fallback: Trim back to the nearest complete word
+  const lastSpaceIndex = truncated.lastIndexOf(' ');
+  return lastSpaceIndex > 0 ? truncated.slice(0, lastSpaceIndex).trim() : truncated.trim();
+}
+
 // Pure function to generate strictly <= 20 character tags
 function buildDeterministicTags(productTitle, features, tone, existingTags = []) {
   const resultTags = new Set(
@@ -89,7 +112,10 @@ function buildFallbackListing(productTitle, features, tone) {
   const cleanTitle = productTitle.trim();
   const validTags = buildDeterministicTags(productTitle, features, tone, []);
 
-  const fallbackTitle = `${cleanTitle} | Custom Handmade Gift | Aesthetic High Quality Unique Present`.slice(0, 140);
+  const fallbackTitle = sanitizeEtsyTitle(
+    `${cleanTitle} | Custom Handmade Gift | Aesthetic High Quality Unique Present`,
+    cleanTitle
+  );
 
   const fallbackDescription = `OVERVIEW
 Elevate your space and routine with our premium ${cleanTitle}. Thoughtfully designed with quality and craftsmanship in mind, this piece makes a remarkable addition to your collection or a memorable gift.
@@ -134,7 +160,7 @@ export async function POST(req) {
 
     const systemPrompt = `You are an expert Etsy SEO specialist. Return a strictly valid JSON object with the exact keys: "title", "tags", and "description".
 Rules:
-1. "title": Maximum 140 characters. High-ranking search phrases separated by " | ".
+1. "title": Strictly under 140 characters. High-ranking search phrases separated by " | ". NEVER leave an incomplete phrase or truncated word at the end.
 2. "tags": An array of EXACTLY 13 strings. Each string MUST be 20 characters or fewer (including spaces). Multi-word long-tail phrases, no punctuation.
 3. "description": Clean, benefit-driven product description with sections for "OVERVIEW", "FEATURES", and "CARE INSTRUCTIONS". 
 CRITICAL FORMATTING FOR DESCRIPTION: Do NOT use markdown syntax (no asterisks **, no hashes #, no markdown bullets *). Use plain capital letters for headings and simple dashes (-) or line breaks for lists so it is 100% ready to paste into Etsy.
@@ -166,12 +192,18 @@ CRITICAL FORMATTING FOR DESCRIPTION: Do NOT use markdown syntax (no asterisks **
     const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
     const parsedContent = JSON.parse(rawText);
 
+    // Hard Sanitize & Post-Process Title
+    const guaranteedTitle = sanitizeEtsyTitle(
+      parsedContent.title || `${productTitle} | Custom Gift`,
+      productTitle
+    );
+
     // Hard Sanitize & Post-Process Tags
     const incomingTags = Array.isArray(parsedContent.tags) ? parsedContent.tags : [];
     const guaranteedTags = buildDeterministicTags(productTitle, features, tone, incomingTags);
 
     return NextResponse.json({
-      title: parsedContent.title || `${productTitle} | Custom Gift`,
+      title: guaranteedTitle,
       tags: guaranteedTags,
       description: parsedContent.description || ''
     });
