@@ -163,7 +163,7 @@ function HomeContent() {
   return (
     <main className="max-w-4xl mx-auto px-4 py-12 relative pb-24">
       {/* Gumroad Overlay Script */}
-      <Script src="https://gumroad.com/js/gumroad.js" strategy="lazyOnload" />
+      <Script src="https://gumroad.com/js/gumroad.js" strategy="afterInteractive" />
 
       {/* Header */}
       <div className="text-center mb-8">
@@ -591,11 +591,10 @@ function HomeContent() {
                       </div>
                       <a
                         href="https://creatiwitty7.gumroad.com/l/etsy-fix?wanted=true"
-                        data-gumroad-single-product="true"
-                        className="gumroad-button inline-flex items-center justify-center gap-2 bg-white text-orange-700 hover:bg-orange-50 px-6 py-3.5 rounded-xl font-bold text-sm shadow-sm transition transform hover:scale-105 active:scale-95 shrink-0"
+                        className="inline-flex items-center justify-center gap-2 bg-white text-orange-700 hover:bg-orange-50 px-6 py-3.5 rounded-xl font-bold text-sm shadow-sm transition transform hover:scale-105 active:scale-95 shrink-0"
                       >
                         <Zap size={16} />
-                        Get 1-Click Fix (\$2.99)
+                        Get 1-Click Fix (\$3.99)
                       </a>
                     </div>
                   </div>
