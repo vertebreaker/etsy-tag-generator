@@ -13,8 +13,8 @@ import {
   CheckCircle2, 
   ExternalLink, 
   Zap, 
-  ArrowRight,
-  ShieldAlert
+  ShieldAlert,
+  RefreshCw
 } from 'lucide-react';
 
 function HomeContent() {
@@ -40,38 +40,66 @@ function HomeContent() {
   // Paid Session (Gumroad Auto-Delivery) State
   const [paidLoading, setPaidLoading] = useState(false);
   const [paidResult, setPaidResult] = useState(null);
+  const [isPaidSession, setIsPaidSession] = useState(false);
+  const [manualPaidTitle, setManualPaidTitle] = useState('');
+
+  // Trigger rewrite engine with precise listing context
+  const runPaidRewrite = async (targetTitle, targetTags) => {
+    if (!targetTitle || !targetTitle.trim()) return;
+
+    setPaidLoading(true);
+    try {
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productTitle: targetTitle.trim(),
+          features: targetTags ? `Keywords & original tags to preserve/improve: ${targetTags.trim()}` : '',
+          tone: 'Warm & Aesthetic'
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        if (data.title && data.title.length > 140) {
+          data.title = data.title.slice(0, 140).trim();
+          if (data.title.endsWith('|') || data.title.endsWith('-') || data.title.endsWith(',')) {
+            data.title = data.title.slice(0, -1).trim();
+          }
+        }
+        if (Array.isArray(data.tags)) {
+          data.tags = data.tags.map(t => t.trim()).slice(0, 13);
+        }
+        setPaidResult(data);
+      } else {
+        alert(data.error || 'Failed to generate paid rewrite.');
+      }
+    } catch (err) {
+      console.error('Paid rewrite generation failed:', err);
+    } finally {
+      setPaidLoading(false);
+    }
+  };
 
   // Detect ?session=paid on redirect from Gumroad
   useEffect(() => {
     const session = searchParams.get('session');
     if (session === 'paid') {
-      const savedTitle = typeof window !== 'undefined' ? localStorage.getItem('last_audited_title') : null;
-      const savedTags = typeof window !== 'undefined' ? localStorage.getItem('last_audited_tags') : null;
+      setIsPaidSession(true);
 
-      const triggerAutoRewrite = async () => {
-        setPaidLoading(true);
-        try {
-          const res = await fetch('/api/generate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              productTitle: savedTitle || 'Optimized Etsy Listing',
-              features: savedTags ? `Keywords: ${savedTags}` : 'High quality, handmade',
-              tone: 'Warm & Aesthetic'
-            }),
-          });
-          const data = await res.json();
-          if (res.ok) {
-            setPaidResult(data);
-          }
-        } catch (err) {
-          console.error('Paid rewrite auto-trigger failed:', err);
-        } finally {
-          setPaidLoading(false);
-        }
-      };
+      // Priority 1: Gumroad forwarded custom parameters in query string
+      const paramTitle = searchParams.get('custom_title') || searchParams.get('title');
+      const paramTags = searchParams.get('custom_tags') || searchParams.get('tags');
 
-      triggerAutoRewrite();
+      // Priority 2: Browser LocalStorage (same browser session)
+      const storedTitle = typeof window !== 'undefined' ? localStorage.getItem('last_audited_title') : null;
+      const storedTags = typeof window !== 'undefined' ? localStorage.getItem('last_audited_tags') : null;
+
+      const resolvedTitle = paramTitle || storedTitle;
+      const resolvedTags = paramTags || storedTags;
+
+      if (resolvedTitle && resolvedTitle.trim() && resolvedTitle !== 'Optimized Etsy Listing') {
+        runPaidRewrite(resolvedTitle, resolvedTags);
+      }
     }
   }, [searchParams]);
 
@@ -119,10 +147,10 @@ function HomeContent() {
     setAuditLoading(true);
     setAuditResult(null);
 
-    // Save inputs so the auto-delivery flow has listing context after checkout
+    // Save inputs so auto-delivery flow has local context
     if (typeof window !== 'undefined') {
-      localStorage.setItem('last_audited_title', auditTitle);
-      localStorage.setItem('last_audited_tags', auditTagsInput);
+      localStorage.setItem('last_audited_title', auditTitle.trim());
+      localStorage.setItem('last_audited_tags', auditTagsInput.trim());
     }
 
     try {
@@ -158,6 +186,17 @@ function HomeContent() {
     navigator.clipboard.writeText(text);
     setCopiedKey(key);
     setTimeout(() => setCopiedKey(''), 2000);
+  };
+
+  // Build bulletproof Gumroad checkout URL passing title and tags
+  const buildCheckoutUrl = () => {
+    const baseUrl = 'https://creatiwitty7.gumroad.com/l/etsy-fix';
+    const params = new URLSearchParams({
+      wanted: 'true',
+      custom_title: auditTitle.trim() || 'Etsy Item',
+      custom_tags: auditTagsInput.trim() || ''
+    });
+    return `${baseUrl}?${params.toString()}`;
   };
 
   return (
@@ -207,7 +246,7 @@ function HomeContent() {
       </div>
 
       {/* Paid Auto-Delivery Screen (Only displays if ?session=paid) */}
-      {(paidLoading || paidResult) && (
+      {isPaidSession && (
         <div className="bg-emerald-50 border-2 border-emerald-500 rounded-2xl p-6 sm:p-8 mb-8 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
             <span className="p-2 bg-emerald-500 text-white rounded-xl">
@@ -215,10 +254,10 @@ function HomeContent() {
             </span>
             <div>
               <h2 className="text-lg sm:text-xl font-bold text-emerald-950">
-                1-Click SEO Rewrite Delivered!
+                1-Click SEO Rewrite Pass Active
               </h2>
               <p className="text-xs sm:text-sm text-emerald-700">
-                Here is your fully optimized, Etsy algorithm-compliant rewrite ready to paste.
+                Your purchased 1-Click Fix has been verified.
               </p>
             </div>
           </div>
@@ -226,14 +265,14 @@ function HomeContent() {
           {paidLoading ? (
             <div className="py-8 text-center text-emerald-800 font-semibold flex items-center justify-center gap-2">
               <span className="animate-spin rounded-full h-5 w-5 border-2 border-emerald-600 border-t-transparent"></span>
-              Generating your 100/100 algorithm-optimized listing...
+              Generating your 100/100 algorithm-optimized rewrite...
             </div>
           ) : paidResult ? (
             <div className="space-y-4">
               <div className="bg-white p-4 rounded-xl border border-emerald-200">
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-xs font-bold text-slate-500 uppercase">
-                    Compliant Title ({paidResult.title?.length}/140)
+                    Optimized Title ({paidResult.title?.length}/140)
                   </span>
                   <button
                     onClick={() => copyToClipboard(paidResult.title, 'paid_title')}
@@ -284,7 +323,31 @@ function HomeContent() {
                 </pre>
               </div>
             </div>
-          ) : null}
+          ) : (
+            /* Fail-Safe Input: If session opened in fresh device/window without params */
+            <div className="bg-white p-5 rounded-xl border border-emerald-200 mt-2 space-y-3">
+              <p className="text-sm font-semibold text-slate-800">
+                Enter your item name to generate your instant rewrite:
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="text"
+                  placeholder="e.g. Handmade Silver Ring"
+                  value={manualPaidTitle}
+                  onChange={(e) => setManualPaidTitle(e.target.value)}
+                  className="flex-1 border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <button
+                  onClick={() => runPaidRewrite(manualPaidTitle, '')}
+                  disabled={!manualPaidTitle.trim()}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  <RefreshCw size={15} />
+                  Generate Rewrite
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -590,7 +653,7 @@ function HomeContent() {
                         </p>
                       </div>
                       <a
-                        href="https://creatiwitty7.gumroad.com/l/etsy-fix?wanted=true"
+                        href={buildCheckoutUrl()}
                         className="inline-flex items-center justify-center gap-2 bg-white text-orange-700 hover:bg-orange-50 px-6 py-3.5 rounded-xl font-bold text-sm shadow-sm transition transform hover:scale-105 active:scale-95 shrink-0"
                       >
                         <Zap size={16} />
