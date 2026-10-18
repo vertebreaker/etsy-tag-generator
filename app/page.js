@@ -204,7 +204,7 @@ function HomeContent() {
       {/* Gumroad Overlay Script */}
       <Script src="https://gumroad.com/js/gumroad.js" strategy="afterInteractive" />
 
-      {/* Header */}
+      {/* Header with Search Intent Summary */}
       <div className="text-center mb-8">
         <span className="bg-orange-100 text-orange-700 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
           100% Free • No Sign-Up Needed
@@ -214,6 +214,9 @@ function HomeContent() {
         </h1>
         <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto mt-2">
           Generate high-ranking tags or audit your existing listing to expose critical rank-killing mistakes.
+        </p>
+        <p className="text-xs text-slate-500 max-w-xl mx-auto mt-1.5 leading-relaxed">
+          Etsy strictly limits tags to 20 characters across 13 slots. Run our free diagnostic to detect character overages and keyword repetition, or generate 13 compliant tags ready to copy with commas.
         </p>
       </div>
 
@@ -725,6 +728,33 @@ function HomeContent() {
 
           <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
             <h3 className="font-semibold text-slate-800 text-sm sm:text-base mb-1.5">
+              What does the free Etsy SEO Audit evaluate?
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              The audit scans for deterministic indexing penalties: tags exceeding 20 characters, unfilled tag slots, keyword cannibalization across tags, and titles that are either too brief or exceeding Etsy's 140-character limit.
+            </p>
+          </div>
+
+          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <h3 className="font-semibold text-slate-800 text-sm sm:text-base mb-1.5">
+              Why does Etsy reject tags over 20 characters?
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              When a tag exceeds 20 characters, Etsy's backend either clips the phrase or rejects it entirely. This leaves your listing unindexed for those target keywords, cutting your search visibility to zero.
+            </p>
+          </div>
+
+          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <h3 className="font-semibold text-slate-800 text-sm sm:text-base mb-1.5">
+              How do I rewrite an Etsy listing to get more search traffic?
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Focus on multi-word long-tail phrases that match exact customer search intent. Combine our one-click listing audit with deep competitor search volume data on eRank to target low-competition, high-converting buyer queries.
+            </p>
+          </div>
+
+          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <h3 className="font-semibold text-slate-800 text-sm sm:text-base mb-1.5">
               How does Etsy prioritize listing titles?
             </h3>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
@@ -738,15 +768,6 @@ function HomeContent() {
             </h3>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               Yes. The descriptions are generated in clean, natural plain text without markdown symbols (like ** or #) so they paste into Etsy's listing description box without requiring any manual editing.
-            </p>
-          </div>
-
-          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-            <h3 className="font-semibold text-slate-800 text-sm sm:text-base mb-1.5">
-              What does the Etsy SEO Audit score evaluate?
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              The audit scans for deterministic indexing penalties: tags exceeding 20 characters, unfilled tag slots, keyword cannibalization across tags, and titles that are either too brief or exceeding Etsy's 140-character limit.
             </p>
           </div>
         </div>
