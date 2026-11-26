@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+export const runtime = 'edge';
+
 // Fallback dictionary for tone-based phrases and modifiers
 const VIBE_KEYWORDS = {
   'Gift & Holiday Focused': [
