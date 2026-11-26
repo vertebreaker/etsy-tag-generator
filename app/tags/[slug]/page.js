@@ -12,7 +12,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }) {
-  const niche = niches.find((item) => item.slug === params.slug);
+  const { slug } = await params;
+  const niche = niches.find((item) => item.slug === slug);
 
   if (!niche) {
     return {
@@ -44,8 +45,9 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function NicheTagsPage({ params }) {
-  const niche = niches.find((item) => item.slug === params.slug);
+export default async function NicheTagsPage({ params }) {
+  const { slug } = await params;
+  const niche = niches.find((item) => item.slug === slug);
 
   if (!niche) {
     notFound();
